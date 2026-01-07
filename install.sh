@@ -13,20 +13,21 @@ PACKAGES=(
 )
 
 echo "🔄 Updating package list..."
-timeout 15s apt update -y || echo "⚠️ apt update skipped (timeout)"
+apt update -y || echo "⚠️ apt update failed"
 
 install_package () {
   PKG=$1
   echo "📦 Installing $PKG ..."
-  timeout 60s bash -c "apt install -y $PKG" \
+  apt install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" $PKG \
     && echo "✅ $PKG installed" \
-    || echo "❌ $PKG skipped (timeout or error)"
+    || echo "❌ $PKG skipped (error)"
 }
 
 for pkg in "${PACKAGES[@]}"; do
   install_package "$pkg"
 done
 
+# فعال کردن cron
 if command -v cron >/dev/null 2>&1; then
   systemctl enable cron 2>/dev/null
   systemctl start cron 2>/dev/null
