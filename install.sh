@@ -13,12 +13,15 @@ PACKAGES=(
 )
 
 echo "🔄 Updating package list..."
-apt update -y || echo "⚠️ apt update failed"
+DEBIAN_FRONTEND=noninteractive apt update -y || echo "⚠️ apt update failed"
 
 install_package () {
   PKG=$1
   echo "📦 Installing $PKG ..."
-  apt install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" $PKG \
+  DEBIAN_FRONTEND=noninteractive apt install -y \
+    -o Dpkg::Options::="--force-confdef" \
+    -o Dpkg::Options::="--force-confold" \
+    $PKG \
     && echo "✅ $PKG installed" \
     || echo "❌ $PKG skipped (error)"
 }
