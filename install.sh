@@ -18,7 +18,7 @@ timeout 15s apt update -y || echo "⚠️ apt update skipped (timeout)"
 install_package () {
   PKG=$1
   echo "📦 Installing $PKG ..."
-  timeout 15s apt install -y $PKG \
+  timeout 60s bash -c "apt install -y $PKG" \
     && echo "✅ $PKG installed" \
     || echo "❌ $PKG skipped (timeout or error)"
 }
@@ -32,4 +32,4 @@ if command -v cron >/dev/null 2>&1; then
   systemctl start cron 2>/dev/null
 fi
 
-echo "🎉 Done."
+echo "🎉 All done!"
