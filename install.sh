@@ -1,5 +1,8 @@
 #!/bin/bash
 
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+
 PACKAGES=(
   tzdata
   python3
@@ -13,12 +16,12 @@ PACKAGES=(
 )
 
 echo "🔄 Updating package list..."
-DEBIAN_FRONTEND=noninteractive apt update -y || echo "⚠️ apt update failed"
+apt update -y || echo "⚠️ apt update failed"
 
 install_package () {
   PKG=$1
   echo "📦 Installing $PKG ..."
-  DEBIAN_FRONTEND=noninteractive apt install -y \
+  apt install -y \
     -o Dpkg::Options::="--force-confdef" \
     -o Dpkg::Options::="--force-confold" \
     $PKG \
@@ -30,7 +33,6 @@ for pkg in "${PACKAGES[@]}"; do
   install_package "$pkg"
 done
 
-# فعال کردن cron
 if command -v cron >/dev/null 2>&1; then
   systemctl enable cron 2>/dev/null
   systemctl start cron 2>/dev/null
